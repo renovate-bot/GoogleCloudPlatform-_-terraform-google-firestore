@@ -1,0 +1,161 @@
+# Copyright 2025 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: blueprints.cloud.google.com/v1alpha1
+kind: BlueprintMetadata
+metadata:
+  name: terraform-google-firestore
+  annotations:
+    config.kubernetes.io/local-config: "true"
+spec:
+  info:
+    title: terraform-google-firestore
+    source:
+      repo: https://github.com/googlestaging/terraform-google-firestore.git
+      sourceType: git
+    version: 0.0.1
+    actuationTool:
+      flavor: Terraform
+      version: ">= 0.13"
+    description:
+      tagline: This is an auto-generated module.
+      detailed: "This module was generated from "
+      preDeploy: To deploy this blueprint you must have an active billing account and billing permissions.
+    icon: assets/icon.png
+    costEstimate:
+      description: Blueprint cost details
+      url: https://cloud.google.com/products/calculator?id=02fb0c45-cc29-4567-8cc6-f72ac9024add
+  content:
+    examples:
+      - name: example_with_backup
+        location: examples/example_with_backup
+      - name: example_with_composite_indexes
+        location: examples/example_with_composite_indexes
+      - name: example_with_fields
+        location: examples/example_with_fields
+      - name: simple_example
+        location: examples/simple_example
+  interfaces:
+    variables:
+      - name: project_id
+        description: The ID of the project in which the Firestore resources are created.
+        varType: string
+        required: true
+      - name: database_id
+        description: Unique identifier of the Firestore Database.
+        varType: string
+        required: true
+      - name: location
+        description: The location in which the Firesotre Database is created.
+        varType: string
+        required: true
+      - name: database_type
+        description: Database type used to created the Firestore Database.
+        varType: string
+        defaultValue: FIRESTORE_NATIVE
+      - name: concurrency_mode
+        description: Concurrency control mode to be used for the Firestore Database.
+        varType: string
+        defaultValue: OPTIMISTIC
+      - name: delete_protection_state
+        description: Determines whether deletion protection is enabled or not for the Firestore Database.
+        varType: string
+        defaultValue: DELETE_PROTECTION_ENABLED
+      - name: kms_key_name
+        description: The resource ID of the Customer-managed Encryption Key (CMEK) using which the created database will be encrypted.
+        varType: string
+      - name: point_in_time_recovery_enablement
+        description: Determines whether point-in-time recovery is enabled for the Firestore Database.
+        varType: string
+        defaultValue: POINT_IN_TIME_RECOVERY_ENABLED
+      - name: deletion_policy
+        description: Deletion policy enforced when Firestore Database is destroyed via Terraform.
+        varType: string
+        defaultValue: DELETED
+      - name: backup_schedule_configuration
+        description: Backup schedule configuration for the Firestore Database.
+        varType: |-
+          object({
+              weekly_recurrence = optional(object({
+                day = string
+                retention = string
+              }))
+
+              daily_recurrence = optional(object({
+                retention = string
+              }))
+            })
+      - name: composite_index_configuration
+        description: Composite index configuration for the Firestore Database.
+        varType: |-
+          list(object({
+              index_id = string
+              collection = string
+              query_scope = optional(string, "COLLECTION")
+              api_scope = optional(string, "ANY_API")
+              fields = list(object({
+                field_path = string
+                order = optional(string)
+                array_config = optional(string)
+                vector_config = optional(object({
+                  dimension = number
+                }))
+              }))
+            }))
+        defaultValue: []
+      - name: field_configuration
+        description: Single field configurations for the Firestore Database.
+        varType: |-
+          list(object({
+              collection = string
+              field = string
+              ttl_enabled = optional(bool, false)
+              ascending_index_query_scope = optional(set(string), [])
+              descending_index_query_scope = optional(set(string), [])
+              array_index_query_scope = optional(set(string), [])
+            }))
+        defaultValue: []
+    outputs:
+      - name: composite_index_ids
+        description: List of composite indices for the firestore database.
+        type:
+          - list
+          - string
+      - name: daily_backup_schedule_id
+        description: The unique backup schedule identifier across all locations and databases for the given project.
+        type: string
+      - name: database_id
+        description: The database id of the firestore database.
+        type: string
+      - name: field_ids
+        description: List of firestore fields created for the database.
+        type:
+          - list
+          - string
+      - name: weekly_backup_schedule_id
+        description: The unique backup schedule identifier across all locations and databases for the given project.
+        type: string
+  requirements:
+    roles:
+      - level: Project
+        roles:
+          - roles/owner
+    services:
+      - cloudresourcemanager.googleapis.com
+      - storage-api.googleapis.com
+      - serviceusage.googleapis.com
+      - firestore.googleapis.com
+    providerVersions:
+      - source: hashicorp/google
+        version: ">= 3.53, < 7"

@@ -7,14 +7,14 @@ This example illustrates how to use the `firestore` module with backups enabled.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| bucket\_name | The name of the bucket to create. | `string` | n/a | yes |
 | project\_id | The ID of the project in which to provision resources. | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| bucket\_name | The name of the bucket. |
+| composite\_index\_ids | Unique identifiers of the composite indexes created. |
+| database\_id | Unique identifier of the created firestore database. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

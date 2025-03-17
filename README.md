@@ -52,28 +52,28 @@ Functional examples are included in the
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| backup\_schedule\_configuration | Describes the backup configuration for the database. | <pre>object({<br>    retention = optional(string, "2419200s")<br>    weekly_recurrence = optional(object({<br>      day = string<br>    }))<br>    daily_recurrence = optional(object({}))<br>  })</pre> | `null` | no |
-| composite\_index\_configuration | List of indexes to create for the database. | <pre>list(object({<br>    index_id = string<br>    collection = string<br>    query_scope = optional(string, "COLLECTION")<br>    api_scope = optional(string, "ANY_API")<br>    fields = list(object({<br>      field_path = string<br>      order = optional(string)<br>      array_config = optional(string)<br>      vector_config = optional(object({<br>        dimension = number<br>      }))<br>    }))<br>  }))</pre> | `[]` | no |
-| concurrency\_mode | The concurrency mode to create the database with. | `string` | `"OPTIMISTIC"` | no |
-| database\_id | The database ID to create the database with. | `string` | n/a | yes |
-| database\_type | The database type to create the database with. | `string` | `"FIRESTORE_NATIVE"` | no |
-| delete\_protection\_state | The deletion protection state to create the database with. | `string` | `"DELETE_PROTECTION_ENABLED"` | no |
-| deletion\_policy | The deletion policy to create the database with. | `string` | `"DELETED"` | no |
-| index\_exemptions | Describes the fields that exempt from default indexing. | <pre>list(object({<br>    collection = string<br>    field = string<br>    ttl_enabled = optional(bool, false)<br>    ascending_index_query_scope = optional(set(string), [])<br>    descending_index_query_scope = optional(set(string), [])<br>    array_index_query_scope = optional(set(string), [])<br>  }))</pre> | `[]` | no |
-| location\_id | The location ID to create the database in. | `string` | n/a | yes |
-| point\_in\_time\_recovery\_enablement | Determines whether point-in-time recovery is enabled for the database. | `string` | `"POINT_IN_TIME_RECOVERY_ENABLED"` | no |
-| project\_id | The project ID to create the database in. | `string` | n/a | yes |
+| backup\_schedule\_configuration | Backup schedule configuration for the Firestore Database. | <pre>object({<br>    weekly_recurrence = optional(object({<br>      day = string<br>      retention = string<br>    }))<br><br>    daily_recurrence = optional(object({<br>      retention = string<br>    }))<br>  })</pre> | `null` | no |
+| composite\_index\_configuration | Composite index configuration for the Firestore Database. | <pre>list(object({<br>    index_id = string<br>    collection = string<br>    query_scope = optional(string, "COLLECTION")<br>    api_scope = optional(string, "ANY_API")<br>    fields = list(object({<br>      field_path = string<br>      order = optional(string)<br>      array_config = optional(string)<br>      vector_config = optional(object({<br>        dimension = number<br>      }))<br>    }))<br>  }))</pre> | `[]` | no |
+| concurrency\_mode | Concurrency control mode to be used for the Firestore Database. | `string` | `"OPTIMISTIC"` | no |
+| database\_id | Unique identifier of the Firestore Database. | `string` | n/a | yes |
+| database\_type | Database type used to created the Firestore Database. | `string` | `"FIRESTORE_NATIVE"` | no |
+| delete\_protection\_state | Determines whether deletion protection is enabled or not for the Firestore Database. | `string` | `"DELETE_PROTECTION_ENABLED"` | no |
+| deletion\_policy | Deletion policy enforced when Firestore Database is destroyed via Terraform. | `string` | `"DELETED"` | no |
+| field\_configuration | Single field configurations for the Firestore Database. | <pre>list(object({<br>    collection = string<br>    field = string<br>    ttl_enabled = optional(bool, false)<br>    ascending_index_query_scope = optional(set(string), [])<br>    descending_index_query_scope = optional(set(string), [])<br>    array_index_query_scope = optional(set(string), [])<br>  }))</pre> | `[]` | no |
+| kms\_key\_name | The resource ID of the Customer-managed Encryption Key (CMEK) using which the created database will be encrypted. | `string` | `null` | no |
+| location | The location in which the Firesotre Database is created. | `string` | n/a | yes |
+| point\_in\_time\_recovery\_enablement | Determines whether point-in-time recovery is enabled for the Firestore Database. | `string` | `"POINT_IN_TIME_RECOVERY_ENABLED"` | no |
+| project\_id | The ID of the project in which the Firestore resources are created. | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| backup\_schedule\_id | The unique backup schedule identifier across all locations and databases for the given project. |
 | composite\_index\_ids | List of composite indices for the firestore database. |
+| daily\_backup\_schedule\_id | The unique backup schedule identifier across all locations and databases for the given project. |
 | database\_id | The database id of the firestore database. |
-| databsed\_uid | System generated UUID4 for the database. |
 | field\_ids | List of firestore fields created for the database. |
-| key\_prefix | The key prefix of the firestore database. |
+| weekly\_backup\_schedule\_id | The unique backup schedule identifier across all locations and databases for the given project. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
