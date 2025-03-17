@@ -26,5 +26,5 @@ output "weekly_backup_schedule_id" {
 
 output "daily_backup_schedule_id" {
   description = "Unique identifier for the daily backup schedule."
-  value       = module.firestore._backup_schedule_id
+  value       = module.firestore.daily_backup_schedule_id
 }
