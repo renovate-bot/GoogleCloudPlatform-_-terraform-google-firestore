@@ -49,6 +49,7 @@ resource "google_firestore_backup_schedule" "daily_backup_schedule" {
   database = google_firestore_database.firestore_database.name
   retention = var.backup_schedule_configuration.daily_recurrence.retention
   daily_recurrence {}
+  depends_on = [ google_firestore_backup_schedule.weekly_backup_schedule ]
 }
 
 
