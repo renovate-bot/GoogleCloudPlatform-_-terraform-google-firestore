@@ -15,22 +15,22 @@
  */
 
 variable "project_id" {
-  description = "The project ID to create the database in."
+  description = "The ID of the project in which the Firestore resources are created."
   type = string
 }
 
 variable "database_id" {
-  description = "The database ID to create the database with."
+  description = "Unique identifier of the Firestore Database."
   type = string
 }
 
 variable "location" {
-  description = "The location ID to create the database in."
+  description = "The location in which the Firesotre Database is created."
   type = string
 }
 
 variable "database_type" {
-  description = "The database type to create the database with."
+  description = "Database type used to created the Firestore Database."
   type = string
   default = "FIRESTORE_NATIVE"
 
@@ -41,7 +41,7 @@ variable "database_type" {
 }
 
 variable "concurrency_mode" {
-  description = "The concurrency mode to create the database with."
+  description = "Concurrency control mode to be used for the Firestore Database."
   type = string
   default = "OPTIMISTIC"
 
@@ -52,7 +52,7 @@ variable "concurrency_mode" {
 }
 
 variable "delete_protection_state" {
-  description = "The deletion protection state to create the database with."
+  description = "Determines whether deletion protection is enabled or not for the Firestore Database."
   type = string
   default = "DELETE_PROTECTION_ENABLED"
 
@@ -69,7 +69,7 @@ variable "kms_key_name" {
 }
 
 variable "point_in_time_recovery_enablement" {
-  description = "Determines whether point-in-time recovery is enabled for the database."
+  description = "Determines whether point-in-time recovery is enabled for the Firestore Database."
   type = string
   default = "POINT_IN_TIME_RECOVERY_ENABLED"
 
@@ -80,13 +80,13 @@ variable "point_in_time_recovery_enablement" {
 }
 
 variable "deletion_policy" {
-  description = "The deletion policy to create the database with."
+  description = "Deletion policy enforced when Firestore Database is destroyed via Terraform."
   type = string
   default = "DELETED"
 }
 
 variable "backup_schedule_configuration" {
-  description = "Describes the backup configuration for the database."
+  description = "Backup schedule configuration for the Firestore Database."
   type = object({
     weekly_recurrence = optional(object({
       day = string
@@ -101,7 +101,7 @@ variable "backup_schedule_configuration" {
 }
 
 variable "composite_index_configuration" {
-  description = "List of composite indexes to create for the database."
+  description = "Composite index configuration for the Firestore Database."
   type = list(object({
     index_id = string
     collection = string
@@ -143,7 +143,7 @@ variable "composite_index_configuration" {
 }
 
 variable "field_configuration" {
-  description = "Describes the single fields that are exempt from default indexing."
+  description = "Single field configurations for the Firestore Database."
   type = list(object({
     collection = string
     field = string
