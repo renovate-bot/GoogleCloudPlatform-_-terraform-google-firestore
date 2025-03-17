@@ -16,80 +16,80 @@
 
 variable "project_id" {
   description = "The ID of the project in which the Firestore resources are created."
-  type = string
+  type        = string
 }
 
 variable "database_id" {
   description = "Unique identifier of the Firestore Database."
-  type = string
+  type        = string
 }
 
 variable "location" {
   description = "The location in which the Firesotre Database is created."
-  type = string
+  type        = string
 }
 
 variable "database_type" {
   description = "Database type used to created the Firestore Database."
-  type = string
-  default = "FIRESTORE_NATIVE"
+  type        = string
+  default     = "FIRESTORE_NATIVE"
 
   validation {
-    condition = var.database_type == "FIRESTORE_NATIVE" || var.database_type == "DATASTORE_MODE"
+    condition     = var.database_type == "FIRESTORE_NATIVE" || var.database_type == "DATASTORE_MODE"
     error_message = "Invalid database type. Database type can be either FIRESTORE_NATIVE (or) DATASTORE_MODE."
   }
 }
 
 variable "concurrency_mode" {
   description = "Concurrency control mode to be used for the Firestore Database."
-  type = string
-  default = "OPTIMISTIC"
+  type        = string
+  default     = "OPTIMISTIC"
 
   validation {
-    condition = var.concurrency_mode == "OPTIMISTIC" || var.concurrency_mode == "PESSIMISTIC" || var.concurrency_mode == "OPTIMISTIC_WITH_ENTITY_GROUPS"
+    condition     = var.concurrency_mode == "OPTIMISTIC" || var.concurrency_mode == "PESSIMISTIC" || var.concurrency_mode == "OPTIMISTIC_WITH_ENTITY_GROUPS"
     error_message = "Invalid concurrency mode. Concurrency mode can be either OPTIMISTIC (or) PESSIMISTIC (or) OPTIMISTIC_WITH_ENTITY_GROUPS."
   }
 }
 
 variable "delete_protection_state" {
   description = "Determines whether deletion protection is enabled or not for the Firestore Database."
-  type = string
-  default = "DELETE_PROTECTION_ENABLED"
+  type        = string
+  default     = "DELETE_PROTECTION_ENABLED"
 
   validation {
-    condition = var.delete_protection_state == "DELETE_PROTECTION_ENABLED" || var.delete_protection_state == "DELETE_PROTECTION_DISABLED"
+    condition     = var.delete_protection_state == "DELETE_PROTECTION_ENABLED" || var.delete_protection_state == "DELETE_PROTECTION_DISABLED"
     error_message = "Invalid deletion protection state. Deletion protection state can be either DELETE_PROTECTION_ENABLED (or) DELETE_PROTECTION_DISABLED."
   }
 }
 
 variable "kms_key_name" {
   description = "The resource ID of the Customer-managed Encryption Key (CMEK) using which the created database will be encrypted."
-  type = string
-  default = null
+  type        = string
+  default     = null
 }
 
 variable "point_in_time_recovery_enablement" {
   description = "Determines whether point-in-time recovery is enabled for the Firestore Database."
-  type = string
-  default = "POINT_IN_TIME_RECOVERY_ENABLED"
+  type        = string
+  default     = "POINT_IN_TIME_RECOVERY_ENABLED"
 
   validation {
-    condition = var.point_in_time_recovery_enablement == "POINT_IN_TIME_RECOVERY_ENABLED" || var.point_in_time_recovery_enablement == "POINT_IN_TIME_RECOVERY_DISABLED"
+    condition     = var.point_in_time_recovery_enablement == "POINT_IN_TIME_RECOVERY_ENABLED" || var.point_in_time_recovery_enablement == "POINT_IN_TIME_RECOVERY_DISABLED"
     error_message = "Invalid point in time recovery configuration. Valid values are POINT_IN_TIME_RECOVERY_ENABLED (or) POINT_IN_TIME_RECOVERY_DISABLED."
   }
 }
 
 variable "deletion_policy" {
   description = "Deletion policy enforced when Firestore Database is destroyed via Terraform."
-  type = string
-  default = "DELETED"
+  type        = string
+  default     = "DELETED"
 }
 
 variable "backup_schedule_configuration" {
   description = "Backup schedule configuration for the Firestore Database."
   type = object({
     weekly_recurrence = optional(object({
-      day = string
+      day       = string
       retention = string
     }))
 
@@ -103,13 +103,13 @@ variable "backup_schedule_configuration" {
 variable "composite_index_configuration" {
   description = "Composite index configuration for the Firestore Database."
   type = list(object({
-    index_id = string
-    collection = string
+    index_id    = string
+    collection  = string
     query_scope = optional(string, "COLLECTION")
-    api_scope = optional(string, "ANY_API")
+    api_scope   = optional(string, "ANY_API")
     fields = list(object({
-      field_path = string
-      order = optional(string)
+      field_path   = string
+      order        = optional(string)
       array_config = optional(string)
       vector_config = optional(object({
         dimension = number
@@ -134,7 +134,7 @@ variable "composite_index_configuration" {
     error_message = "Invalid query scope. Query scope can be either COLLECTION (or) COLLECTION_GROUP (or) COLLECTION_RECURSIVE."
   }
 
-    validation {
+  validation {
     condition = alltrue(flatten([
       for item in var.composite_index_configuration : (item.api_scope == "ANY_API" || item.api_scope == "DATASTORE_MODE_API")
     ]))
@@ -145,15 +145,15 @@ variable "composite_index_configuration" {
 variable "field_configuration" {
   description = "Single field configurations for the Firestore Database."
   type = list(object({
-    collection = string
-    field = string
-    ttl_enabled = optional(bool, false)
-    ascending_index_query_scope = optional(set(string), [])
+    collection                   = string
+    field                        = string
+    ttl_enabled                  = optional(bool, false)
+    ascending_index_query_scope  = optional(set(string), [])
     descending_index_query_scope = optional(set(string), [])
-    array_index_query_scope = optional(set(string), [])
+    array_index_query_scope      = optional(set(string), [])
   }))
   default = []
-  
+
   validation {
     condition = alltrue(flatten([
       for field in var.field_configuration : alltrue(flatten([

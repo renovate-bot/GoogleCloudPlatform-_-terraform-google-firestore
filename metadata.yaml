@@ -27,7 +27,7 @@ spec:
     version: 0.0.1
     actuationTool:
       flavor: Terraform
-      version: ">= 0.13"
+      version: ">= 1.3"
     description:
       tagline: This is an auto-generated module.
       detailed: "This module was generated from "
@@ -88,7 +88,7 @@ spec:
         varType: |-
           object({
               weekly_recurrence = optional(object({
-                day = string
+                day       = string
                 retention = string
               }))
 
@@ -100,13 +100,13 @@ spec:
         description: Composite index configuration for the Firestore Database.
         varType: |-
           list(object({
-              index_id = string
-              collection = string
+              index_id    = string
+              collection  = string
               query_scope = optional(string, "COLLECTION")
-              api_scope = optional(string, "ANY_API")
+              api_scope   = optional(string, "ANY_API")
               fields = list(object({
-                field_path = string
-                order = optional(string)
+                field_path   = string
+                order        = optional(string)
                 array_config = optional(string)
                 vector_config = optional(object({
                   dimension = number
@@ -118,12 +118,12 @@ spec:
         description: Single field configurations for the Firestore Database.
         varType: |-
           list(object({
-              collection = string
-              field = string
-              ttl_enabled = optional(bool, false)
-              ascending_index_query_scope = optional(set(string), [])
+              collection                   = string
+              field                        = string
+              ttl_enabled                  = optional(bool, false)
+              ascending_index_query_scope  = optional(set(string), [])
               descending_index_query_scope = optional(set(string), [])
-              array_index_query_scope = optional(set(string), [])
+              array_index_query_scope      = optional(set(string), [])
             }))
         defaultValue: []
     outputs:

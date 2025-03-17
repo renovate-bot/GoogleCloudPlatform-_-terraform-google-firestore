@@ -16,25 +16,25 @@
 
 output "database_id" {
   description = "The database id of the firestore database."
-  value       =  google_firestore_database.firestore_database.id
+  value       = google_firestore_database.firestore_database.id
 }
 
 output "daily_backup_schedule_id" {
   description = "The unique backup schedule identifier across all locations and databases for the given project."
-  value = length(google_firestore_backup_schedule.daily_backup_schedule) > 0 ? google_firestore_backup_schedule.daily_backup_schedule[0].id : null
+  value       = length(google_firestore_backup_schedule.daily_backup_schedule) > 0 ? google_firestore_backup_schedule.daily_backup_schedule[0].id : null
 }
 
 output "weekly_backup_schedule_id" {
   description = "The unique backup schedule identifier across all locations and databases for the given project."
-  value = length(google_firestore_backup_schedule.weekly_backup_schedule) > 0 ? google_firestore_backup_schedule.weekly_backup_schedule[0].id : null
+  value       = length(google_firestore_backup_schedule.weekly_backup_schedule) > 0 ? google_firestore_backup_schedule.weekly_backup_schedule[0].id : null
 }
 
 output "composite_index_ids" {
   description = "List of composite indices for the firestore database."
-  value = tolist(values(google_firestore_index.firestore_index)[*].id)
+  value       = tolist(values(google_firestore_index.firestore_index)[*].id)
 }
 
 output "field_ids" {
   description = "List of firestore fields created for the database."
-  value = tolist(values(google_firestore_field.firestore_field)[*].id)
+  value       = tolist(values(google_firestore_field.firestore_field)[*].id)
 }

@@ -15,14 +15,14 @@
  */
 
 resource "google_firestore_database" "firestore_database" {
-  project = var.project_id
-  name = var.database_id
-  location_id = var.location
-  type = var.database_type
-  concurrency_mode = var.concurrency_mode
-  delete_protection_state = var.delete_protection_state
+  project                           = var.project_id
+  name                              = var.database_id
+  location_id                       = var.location
+  type                              = var.database_type
+  concurrency_mode                  = var.concurrency_mode
+  delete_protection_state           = var.delete_protection_state
   point_in_time_recovery_enablement = var.point_in_time_recovery_enablement
-  deletion_policy = var.deletion_policy
+  deletion_policy                   = var.deletion_policy
 
   dynamic "cmek_config" {
     for_each = var.kms_key_name != null ? [var.kms_key_name] : []
@@ -33,9 +33,9 @@ resource "google_firestore_database" "firestore_database" {
 }
 
 resource "google_firestore_backup_schedule" "weekly_backup_schedule" {
-  count = try(var.backup_schedule_configuration.weekly_recurrence != null, false) ? 1 : 0
-  project  = var.project_id
-  database = google_firestore_database.firestore_database.name
+  count     = try(var.backup_schedule_configuration.weekly_recurrence != null, false) ? 1 : 0
+  project   = var.project_id
+  database  = google_firestore_database.firestore_database.name
   retention = var.backup_schedule_configuration.weekly_recurrence.retention
 
   weekly_recurrence {
@@ -44,28 +44,28 @@ resource "google_firestore_backup_schedule" "weekly_backup_schedule" {
 }
 
 resource "google_firestore_backup_schedule" "daily_backup_schedule" {
-  count = try(var.backup_schedule_configuration.daily_recurrence != null, false) ? 1 : 0
-  project  = var.project_id
-  database = google_firestore_database.firestore_database.name
+  count     = try(var.backup_schedule_configuration.daily_recurrence != null, false) ? 1 : 0
+  project   = var.project_id
+  database  = google_firestore_database.firestore_database.name
   retention = var.backup_schedule_configuration.daily_recurrence.retention
   daily_recurrence {}
-  depends_on = [ google_firestore_backup_schedule.weekly_backup_schedule ]
+  depends_on = [google_firestore_backup_schedule.weekly_backup_schedule]
 }
 
 
 resource "google_firestore_index" "firestore_index" {
-  for_each = { for obj in var.composite_index_configuration : obj.index_id => obj }
-  project  = var.project_id
-  database = google_firestore_database.firestore_database.name
-  collection = each.value.collection
+  for_each    = { for obj in var.composite_index_configuration : obj.index_id => obj }
+  project     = var.project_id
+  database    = google_firestore_database.firestore_database.name
+  collection  = each.value.collection
   query_scope = each.value.query_scope
-  api_scope = each.value.api_scope
-  
+  api_scope   = each.value.api_scope
+
   dynamic "fields" {
     for_each = each.value.fields
     content {
-      field_path = fields.value.field_path
-      order = fields.value.order
+      field_path   = fields.value.field_path
+      order        = fields.value.order
       array_config = fields.value.array_config
       dynamic "vector_config" {
         for_each = fields.value.vector_config != null ? [fields.value.vector_config] : []
@@ -79,7 +79,7 @@ resource "google_firestore_index" "firestore_index" {
 }
 
 resource "google_firestore_field" "firestore_field" {
-  for_each = { for obj in var.field_configuration : "${obj.collection}#${obj.field}" => obj }
+  for_each   = { for obj in var.field_configuration : "${obj.collection}#${obj.field}" => obj }
   project    = var.project_id
   database   = google_firestore_database.firestore_database.name
   collection = each.value.collection
@@ -94,7 +94,7 @@ resource "google_firestore_field" "firestore_field" {
     dynamic "indexes" {
       for_each = each.value.ascending_index_query_scope
       content {
-        order = "ASCENDING"
+        order       = "ASCENDING"
         query_scope = indexes.value
       }
     }
@@ -102,7 +102,7 @@ resource "google_firestore_field" "firestore_field" {
     dynamic "indexes" {
       for_each = each.value.descending_index_query_scope
       content {
-        order = "DESCENDING"
+        order       = "DESCENDING"
         query_scope = indexes.value
       }
     }
@@ -111,7 +111,7 @@ resource "google_firestore_field" "firestore_field" {
       for_each = each.value.array_index_query_scope
       content {
         array_config = "CONTAINS"
-        query_scope = indexes.value
+        query_scope  = indexes.value
       }
     }
   }

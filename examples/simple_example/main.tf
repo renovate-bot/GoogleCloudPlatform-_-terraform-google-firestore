@@ -15,13 +15,13 @@
  */
 
 module "firestore" {
-  source = "../.."
-  project_id = var.project_id
-  database_id = "terraform-blueprint-test"
-  location = "us-central1"
-  database_type = "FIRESTORE_NATIVE"
-  concurrency_mode = "OPTIMISTIC"
-  delete_protection_state = "DELETE_PROTECTION_DISABLED"
+  source                            = "googlestaging/firestore/google"
+  project_id                        = var.project_id
+  database_id                       = "terraform-blueprint-test"
+  location                          = "us-central1"
+  database_type                     = "FIRESTORE_NATIVE"
+  concurrency_mode                  = "OPTIMISTIC"
+  delete_protection_state           = "DELETE_PROTECTION_DISABLED"
   point_in_time_recovery_enablement = "POINT_IN_TIME_RECOVERY_DISABLED"
-  deletion_policy = "DELETE"
+  deletion_policy                   = "DELETE"
 }

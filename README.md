@@ -2,46 +2,70 @@
 
 ## Description
 ### Tagline
-This is an auto-generated module.
+This terraform module is used to create a [Cloud Firestore](https://cloud.google.com/products/firestore) database
 
 ### Detailed
-This module was generated from [terraform-google-module-template](https://github.com/terraform-google-modules/terraform-google-module-template/), which by default generates a module that simply creates a GCS bucket. As the module develops, this README should be updated.
-
 The resources/services/activations/deletions that this module will create/trigger are:
 
-- Create a GCS bucket with the provided name
-
-### PreDeploy
-To deploy this blueprint you must have an active billing account and billing permissions.
-
-## Architecture
-![alt text for diagram](https://www.link-to-architecture-diagram.com)
-1. Architecture description step no. 1
-2. Architecture description step no. 2
-3. Architecture description step no. N
-
-## Documentation
-- [Hosting a Static Website](https://cloud.google.com/storage/docs/hosting-static-website)
-
-## Deployment Duration
-Configuration: X mins
-Deployment: Y mins
-
-## Cost
-[Blueprint cost details](https://cloud.google.com/products/calculator?id=02fb0c45-cc29-4567-8cc6-f72ac9024add)
+- Creates a Cloud Firestore database.
+- Creates a daily/weekly backup schedule for the Firestore database.
+- Creates composite indexes for the database.
+- Creates single fields exempt from default indexing for the database.
 
 ## Usage
-
 Basic usage of this module is as follows:
 
 ```hcl
-module "firestore" {
-  source  = "terraform-google-modules/firestore/google"
-  version = "~> 0.1"
+module "firestore_infra" {
+  source = "terraform-google-modules/firestore/google"
+  project_id = "<PROJECT_ID>"
+  database_id = "firestore-test-db"
+  location_id = "us-central1"
+  database_type = "FIRESTORE_NATIVE"
+  concurrency_mode = "OPTIMISTIC"
+  delete_protection_state = "DELETE_PROTECTION_DISABLED"
+  point_in_time_recovery_enablement = "POINT_IN_TIME_RECOVERY_DISABLED"
+  deletion_policy = "ABANDON"
+  backup_schedule_configuration = {
+    daily_recurrence = {}
+    retention = "2419200s"
+  }
 
-  project_id  = "<PROJECT ID>"
-  bucket_name = "gcs-test-bucket"
+  composite_index_configuration = [
+    {
+      index_id = "my-index1"
+      collection = "terraform-firestore-collection"
+      query_scope = "COLLECTION"
+      api_scope = "ANY_API"
+      fields = [
+        {
+          field_path = "field1"
+          order = "ASCENDING"
+        },
+        {
+          field_path = "field2"
+          order = "DESCENDING"
+        }
+      ]
+    }
+  ]
+
+  field_configuration = [
+    {
+      collection = "reviews"
+      field = "field3"
+      ascending_index_query_scope = ["COLLECTION_GROUP"]
+      descending_index_query_scope = ["COLLECTION_GROUP"]
+      array_index_query_scope = ["COLLECTION"]
+    },
+    {
+      collection = "reviews"
+      field = "field4"
+      ascending_index_query_scope = ["COLLECTION_GROUP", "COLLECTION_GROUP"]
+    }
+  ]
 }
+
 ```
 
 Functional examples are included in the
@@ -52,14 +76,14 @@ Functional examples are included in the
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| backup\_schedule\_configuration | Backup schedule configuration for the Firestore Database. | <pre>object({<br>    weekly_recurrence = optional(object({<br>      day = string<br>      retention = string<br>    }))<br><br>    daily_recurrence = optional(object({<br>      retention = string<br>    }))<br>  })</pre> | `null` | no |
-| composite\_index\_configuration | Composite index configuration for the Firestore Database. | <pre>list(object({<br>    index_id = string<br>    collection = string<br>    query_scope = optional(string, "COLLECTION")<br>    api_scope = optional(string, "ANY_API")<br>    fields = list(object({<br>      field_path = string<br>      order = optional(string)<br>      array_config = optional(string)<br>      vector_config = optional(object({<br>        dimension = number<br>      }))<br>    }))<br>  }))</pre> | `[]` | no |
+| backup\_schedule\_configuration | Backup schedule configuration for the Firestore Database. | <pre>object({<br>    weekly_recurrence = optional(object({<br>      day       = string<br>      retention = string<br>    }))<br><br>    daily_recurrence = optional(object({<br>      retention = string<br>    }))<br>  })</pre> | `null` | no |
+| composite\_index\_configuration | Composite index configuration for the Firestore Database. | <pre>list(object({<br>    index_id    = string<br>    collection  = string<br>    query_scope = optional(string, "COLLECTION")<br>    api_scope   = optional(string, "ANY_API")<br>    fields = list(object({<br>      field_path   = string<br>      order        = optional(string)<br>      array_config = optional(string)<br>      vector_config = optional(object({<br>        dimension = number<br>      }))<br>    }))<br>  }))</pre> | `[]` | no |
 | concurrency\_mode | Concurrency control mode to be used for the Firestore Database. | `string` | `"OPTIMISTIC"` | no |
 | database\_id | Unique identifier of the Firestore Database. | `string` | n/a | yes |
 | database\_type | Database type used to created the Firestore Database. | `string` | `"FIRESTORE_NATIVE"` | no |
 | delete\_protection\_state | Determines whether deletion protection is enabled or not for the Firestore Database. | `string` | `"DELETE_PROTECTION_ENABLED"` | no |
 | deletion\_policy | Deletion policy enforced when Firestore Database is destroyed via Terraform. | `string` | `"DELETED"` | no |
-| field\_configuration | Single field configurations for the Firestore Database. | <pre>list(object({<br>    collection = string<br>    field = string<br>    ttl_enabled = optional(bool, false)<br>    ascending_index_query_scope = optional(set(string), [])<br>    descending_index_query_scope = optional(set(string), [])<br>    array_index_query_scope = optional(set(string), [])<br>  }))</pre> | `[]` | no |
+| field\_configuration | Single field configurations for the Firestore Database. | <pre>list(object({<br>    collection                   = string<br>    field                        = string<br>    ttl_enabled                  = optional(bool, false)<br>    ascending_index_query_scope  = optional(set(string), [])<br>    descending_index_query_scope = optional(set(string), [])<br>    array_index_query_scope      = optional(set(string), [])<br>  }))</pre> | `[]` | no |
 | kms\_key\_name | The resource ID of the Customer-managed Encryption Key (CMEK) using which the created database will be encrypted. | `string` | `null` | no |
 | location | The location in which the Firesotre Database is created. | `string` | n/a | yes |
 | point\_in\_time\_recovery\_enablement | Determines whether point-in-time recovery is enabled for the Firestore Database. | `string` | `"POINT_IN_TIME_RECOVERY_ENABLED"` | no |

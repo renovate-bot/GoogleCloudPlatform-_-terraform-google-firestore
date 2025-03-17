@@ -21,5 +21,5 @@ output "database_id" {
 
 output "field_ids" {
   description = "List of unique identifiers for created fields."
-  value = module.firestore.field_ids
+  value       = module.firestore.field_ids
 }

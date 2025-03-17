@@ -21,5 +21,5 @@ output "database_id" {
 
 output "composite_index_ids" {
   description = "Unique identifiers of the composite indexes created."
-  value = module.firestore.composite_index_ids
+  value       = module.firestore.composite_index_ids
 }
