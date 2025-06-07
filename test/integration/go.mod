@@ -2,7 +2,7 @@ module github.com/terraform-google-modules/firestore/test/integration
 
 go 1.23.0
 
-toolchain go1.24.1
+toolchain go1.24.3
 
 require (
 	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.17.6
